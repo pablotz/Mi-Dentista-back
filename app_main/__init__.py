@@ -3,6 +3,8 @@
 import flask
 import flask_cors
 
+from .routes import user
+
 
 def create_app():
     # Creamos una instancia de Flask
@@ -14,7 +16,7 @@ def create_app():
         }
     })
     app.config['CORS_HEADERS'] = 'Content-Type'
-    # app.register_blueprint(usuario_route)
+    app.register_blueprint(user.route)
     # app.register_blueprint(rol_usuario_route)
     # app.register_blueprint(inicio_sesion_route)
     # app.register_blueprint(venta_route)
