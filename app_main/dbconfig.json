@@ -1,0 +1,6 @@
+{
+    "DEBUG": false,
+    "SECRET_KEY": "2a6dacb4-94ad-5818-8d33-e2a0b5401e02",
+    "SQLALCHEMY_TRACK_MODIFICATIONS": false,
+    "SQLALCHEMY_DATABASE_URI": "mysql+pymysql://root:root@localhost/rookie_coffee_db"
+}

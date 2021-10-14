@@ -2,6 +2,8 @@
 # Importamos la clase Flask del módulo flask
 import flask
 import flask_cors
+from .core.model.system_user import system_user
+from .connection import db, DB_CONFIG
 
 from .routes import user
 
@@ -17,18 +19,13 @@ def create_app():
     })
     app.config['CORS_HEADERS'] = 'Content-Type'
     app.register_blueprint(user.route)
-    # app.register_blueprint(rol_usuario_route)
-    # app.register_blueprint(inicio_sesion_route)
-    # app.register_blueprint(venta_route)
-    # app.register_blueprint(producto_route)
-    # app.register_blueprint(ingrediente_route)
 
-    # app.config.from_json(DB_CONFIGURACION)
+    app.config.from_json(DB_CONFIG)
 
-    # db.init_app(app)
+    db.init_app(app)
 
-    # @app.before_first_request
-    # def create_all():
-    # db.create_all()
+    @app.before_first_request
+    def create_all():
+        db.create_all()
 
     return app
