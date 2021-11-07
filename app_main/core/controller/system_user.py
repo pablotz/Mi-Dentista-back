@@ -16,6 +16,7 @@ def add(request):
     name = get_or_error(requestJSON, 'name')
     lastName = get_or_error(requestJSON, 'lastName')
     email = get_or_error(requestJSON, 'email')
+    phone = get(requestJSON, 'phone')
     password = get_or_error(requestJSON, 'password')
     role = get_or_error(requestJSON, 'role')
 
@@ -34,6 +35,7 @@ def add(request):
         last_name=lastName,
         email=email,
         user_password=generate_password_hash(password, method='sha256'),
+        phone=phone,
         access_code=access_code,
         user_role=role)
     db.session.add(new_user)
