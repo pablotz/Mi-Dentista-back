@@ -1,6 +1,7 @@
 from ..model.system_user import system_user as model
 from ...connection import db
 from werkzeug.security import generate_password_hash
+from .access_code import validate as validate_access_code
 import re
 
 regex = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b'
@@ -18,17 +19,22 @@ def add(request):
     password = obtener_validar(requestJSON, 'password')
     role = obtener_validar(requestJSON, 'role')
 
+    access_code = None
     if(role == "admin"):
         role = 1
     else:
         role = 0
+        access_code = obtener_validar(requestJSON, 'access_code')
     check(email)
+
+    validate_access_code(access_code)
 
     new_user = model(
         user_name=name,
         last_name=lastName,
         email=email,
         user_password=generate_password_hash(password, method='sha256'),
+        access_code=access_code,
         user_role=role)
     db.session.add(new_user)
 
