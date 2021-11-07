@@ -57,6 +57,14 @@ def get_or_error(json, atributo):
         raise Exception(f"Formato incorrecto en {atributo}")
 
 
+def get(json, atributo):
+    try:
+        return json[atributo]
+
+    except Exception:
+        return None
+
+
 def check(email):
     if(not re.fullmatch(regex, email)):
         raise Exception("Invalid Email")
