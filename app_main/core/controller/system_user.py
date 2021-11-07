@@ -16,7 +16,12 @@ def add(request):
     lastName = obtener_validar(requestJSON, 'lastName')
     email = obtener_validar(requestJSON, 'email')
     password = obtener_validar(requestJSON, 'password')
+    role = obtener_validar(requestJSON, 'role')
 
+    if(role == "admin"):
+        role = 1
+    else:
+        role = 0
     check(email)
 
     new_user = model(
@@ -24,7 +29,7 @@ def add(request):
         last_name=lastName,
         email=email,
         user_password=generate_password_hash(password, method='sha256'),
-        user_role=1)
+        user_role=role)
     db.session.add(new_user)
 
     try:
