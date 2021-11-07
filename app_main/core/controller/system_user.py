@@ -13,18 +13,18 @@ def add(request):
             'JSON no encontrado. El JSON es necesario para procesar la petición.')
 
     requestJSON = request.json
-    name = obtener_validar(requestJSON, 'name')
-    lastName = obtener_validar(requestJSON, 'lastName')
-    email = obtener_validar(requestJSON, 'email')
-    password = obtener_validar(requestJSON, 'password')
-    role = obtener_validar(requestJSON, 'role')
+    name = get_or_error(requestJSON, 'name')
+    lastName = get_or_error(requestJSON, 'lastName')
+    email = get_or_error(requestJSON, 'email')
+    password = get_or_error(requestJSON, 'password')
+    role = get_or_error(requestJSON, 'role')
 
     access_code = None
     if(role == "admin"):
         role = 1
     else:
         role = 0
-        access_code = obtener_validar(requestJSON, 'access_code')
+        access_code = get_or_error(requestJSON, 'access_code')
     check(email)
 
     validate_access_code(access_code)
@@ -49,7 +49,7 @@ def add(request):
     return buscar_id(new_user.id)
 
 
-def obtener_validar(json, atributo):
+def get_or_error(json, atributo):
     try:
         return json[atributo]
 
