@@ -26,9 +26,8 @@ def add(request):
     else:
         role = 0
         access_code = get_or_error(requestJSON, 'access_code')
+        validate_access_code(access_code)
     check(email)
-
-    validate_access_code(access_code)
 
     new_user = model(
         user_name=name,
