@@ -45,7 +45,7 @@ def validate_access(required_role):
                         "status": "ERROR",
                         "message": "Access denied."
                     })
-                return f(*args, **kwargs)
+                return f(user.id, *args, **kwargs)
 
             except Exception as e:
                 return jsonify({
