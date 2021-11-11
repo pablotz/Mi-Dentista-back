@@ -2,12 +2,11 @@
 # Importamos la clase Flask del módulo flask
 import flask
 import flask_cors
-
 from app_main.routes.login import login
 from .core.model.system_user import system_user
 from .connection import db, DB_CONFIG
 
-from .routes import user, login
+from .routes import user, login, services
 
 
 def create_app():
@@ -22,6 +21,7 @@ def create_app():
     app.config['CORS_HEADERS'] = 'Content-Type'
     app.register_blueprint(user.route)
     app.register_blueprint(login.route)
+    app.register_blueprint(services.route)
 
     app.config.from_json(DB_CONFIG)
 
