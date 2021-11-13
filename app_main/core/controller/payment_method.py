@@ -1,70 +1,8 @@
-# from typing_extensions import Required
-from ..model.services import services as model
+
+from ..model.payment_method import payment_method as model
 from ...connection import db
-import re
 
 regex = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b'
-
-def addServices(request):
-    if not request.json:
-        raise Exception('JSON no encontrado. El JSON es necesario para procesar la petición.')
-    
-    requestJSON = request.json
-    name = obtener_validar(requestJSON, 'name')
-    duration = obtener_validar(requestJSON, 'duration')
-    price = obtener_validar(requestJSON, 'price')
-    create_by = obtener_validar(requestJSON, 'create_by')
-    
-    new_service = model(
-            name=name,
-            duration=duration,
-            price=price,
-            create_by=create_by,
-            estatus=1
-    )
-    
-    try:
-        db.session.add(new_service)
-        db.session.commit()
-        return {'message': 'Servicio agregado exitosamente'}
-    except Exception as es:
-            raise Exception('Ocurrio un error')
-        
-def editServices(request):
-    if not request.json:
-        raise Exception('JSON no encontrado. El JSON es necesario para procesar la petición.')
-    
-    requestJSON = request.json
-    id = obtener_validar(requestJSON, 'id')
-    name = obtener_validar(requestJSON, 'name')
-    duration = obtener_validar(requestJSON, 'duration')
-    price = obtener_validar(requestJSON, 'price')
-    create_by = obtener_validar(requestJSON, 'create_by')
-    
-    edit_service = model(
-            id=id, 
-            name=name,
-            duration=duration,
-            price=price,
-            create_by=create_by,
-            estatus=1
-    )
-    try:
-        editService =  db.session.query(model).filter(model.id == edit_service.id).first()
-        editService.name = edit_service.name
-        editService.duration = edit_service.duration
-        editService.price = edit_service.price
-        editService.create_by = edit_service.create_by
-        db.session.add(editService)
-        db.session.commit()
-        return {'message': 'Servicio editado exitosamente'}
-    except Exception as es:
-            raise Exception('Ocurrio un error')
-    
-    
-def getServices():
-    return model.query.all()
-    
 
 def obtener_validar(json, atributo):
     try:
@@ -73,26 +11,79 @@ def obtener_validar(json, atributo):
     except Exception:
         raise Exception(f"Formato incorrecto en {atributo}")
     
-def findServices(_id):
+
+def addPaymentMethod(request):
+    if not request.json:
+        raise Exception('JSON no encontrado. El JSON es necesario para procesar la petición.')
+    
+    requestJSON = request.json
+    name = obtener_validar(requestJSON, 'name')
+    create_by = obtener_validar(requestJSON, 'create_by')
+    
+    new_service = model(
+            name=name,
+            create_by=create_by,
+            estatus=1
+    )
+    
+    try:
+        db.session.add(new_service)
+        db.session.commit()
+        return {'message': 'Metodo de pago agregado exitosamente'}
+    
+    except Exception as es:
+            raise Exception('Ocurrio un error')
+        
+def editPayMethod(request):
+    if not request.json:
+        raise Exception('JSON no encontrado. El JSON es necesario para procesar la petición.')
+    
+    requestJSON = request.json
+    id = obtener_validar(requestJSON, 'id')
+    name = obtener_validar(requestJSON, 'name')
+    create_by = obtener_validar(requestJSON, 'create_by')
+    
+    edit_PayMethod = model(
+            id=id, 
+            name=name,
+            create_by=create_by,
+            estatus=1
+    )
+    try:
+        editPayMethod =  db.session.query(model).filter(model.id == edit_PayMethod.id).first()
+        editPayMethod.name = edit_PayMethod.name
+        editPayMethod.create_by = edit_PayMethod.create_by
+        db.session.add(editPayMethod)
+        db.session.commit()
+        return {'message': 'El metodo de pago editado exitosamente'}
+    except Exception as es:
+            raise Exception('Ocurrio un error')
+    
+def getPayMethod():
+    return model.query.all()
+
+def findPayMethod(_id):
     if _id == 0:
         return model.query.all()
     else:
         return db.session.query(model).filter(model.id == _id).first()
+    
 
 def desactivateStatus(_id):
     if _id == 0:
         return "El id no puede ser cero"
-    desactivateService = db.session.query(model).filter(model.id == _id).first()
-    desactivateService.estatus = 0
-    db.session.add(desactivateService)
+    desactivatePayMethod = db.session.query(model).filter(model.id == _id).first()
+    desactivatePayMethod.estatus = 0
+    db.session.add(desactivatePayMethod)
     db.session.commit()
     return True
 
 def activateStatus(_id):
     if _id == 0:
         return "El id no puede ser cero"
-    activateServices = db.session.query(model).filter(model.id == _id).first()
-    activateServices.estatus = 1
-    db.session.add(activateServices)
+    activatePayMethod = db.session.query(model).filter(model.id == _id).first()
+    activatePayMethod.estatus = 1
+    db.session.add(activatePayMethod)
     db.session.commit()
     return True
+    

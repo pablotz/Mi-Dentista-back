@@ -6,8 +6,8 @@ from app_main.routes.login import login
 from .core.model.system_user import system_user
 from .connection import db, DB_CONFIG
 
-from .routes import user, login, access_code
-from .routes import user, login, services
+from .routes import user, login, access_code, services, payment_method
+
 
 
 def create_app():
@@ -24,6 +24,7 @@ def create_app():
     app.register_blueprint(login.route)
     app.register_blueprint(access_code.route)
     app.register_blueprint(services.route)
+    app.register_blueprint(payment_method.route)
 
     app.config.from_json(DB_CONFIG)
 

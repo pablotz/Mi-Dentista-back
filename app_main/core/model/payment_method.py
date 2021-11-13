@@ -4,16 +4,11 @@ from sqlalchemy.sql import func
 
 from app_main.core.model.system_user import system_user
 
-class services(db.Model):
+class payment_method(db.Model):
     
-    __tablename__ = "services"
+    __tablename__ = 'payment_method'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50), nullable=False)
-    duration = db.Column(db.Integer, nullable=False)
-    price = db.Column(db.Float, nullable=False)
     create_by = db.Column(db.Integer, db.ForeignKey(system_user.id), nullable=true)
     created_at = db.Column(db.DateTime(timezone=True),server_default=func.now(), nullable=False)
     estatus = db.Column(db.Integer, nullable=False)
-    
-    
-    
