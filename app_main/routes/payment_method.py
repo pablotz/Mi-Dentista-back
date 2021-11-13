@@ -1,10 +1,9 @@
 import flask
 from flask.globals import request
 from flask.json import jsonify
-from ..core.controller import services as servicesController
+from ..core.controller import payment_method as PaymentMethodController
 
-route = flask.Blueprint("services_route", __name__, url_prefix="/services")
-
+route = flask.Blueprint("paymentmethod_route", __name__, url_prefix="/payment_method")
 
 @route.route('/add', methods=['POST'])
 def add():
@@ -13,10 +12,10 @@ def add():
     message = ''
     content = ''
     try:
-        new_service = servicesController.addServices(flask.request)
+        new_service = PaymentMethodController.addPaymentMethod(flask.request)
 
         status = "OK"
-        message = "Services registered"
+        message = "Payment Method registered"
         content = new_service
 
     except Exception as error:
@@ -27,8 +26,6 @@ def add():
     return flask.jsonify({"status": status, "message": message, "content": content})
 
 
-
-
 @route.route('/edit', methods=['POST'])
 def edit():
     # return controller.add(flask.request)
@@ -36,10 +33,9 @@ def edit():
     message = ''
     content = ''
     try:
-        edit_service = servicesController.editServices(flask.request)
-
+        edit_service = PaymentMethodController.editPayMethod(flask.request)
         status = "OK"
-        message = "Services Edited"
+        message = "Payment method edited"
         content = edit_service
 
     except Exception as error:
@@ -50,21 +46,19 @@ def edit():
     return flask.jsonify({"status": status, "message": message, "content": content})
 
 
-
-
 @route.route("/get", methods=['GET'])
-def getAllServices():
-    services  = servicesController.getServices()
-    services_json = []
-    for service in services:
-        services_dictionary = service.__dict__
+def getAllPaymentMethods():
+    payment_methods  = PaymentMethodController.getPayMethod()
+    payment_methods_json = []
+    for payment_method in payment_methods:
+        services_dictionary = payment_method.__dict__
         del services_dictionary['_sa_instance_state']
-        services_json.append(services_dictionary)
-    return jsonify(services_json)
+        payment_methods_json.append(services_dictionary)
+    return jsonify(payment_methods_json)
 
 
 @route.route("/find", methods=['GET'])
-def findServices():
+def FindPaymentMethod():
     estado = "OK"
     mensaje = "Información consultada correctamente"
     try:
@@ -72,25 +66,25 @@ def findServices():
         print("_id" not in request.json)
         
         if "_id" not in request.json or request.json["_id"] == 0:
-            print("test")
-            services = servicesController.findServices(0)
-            if len(services)>0:
+            
+            payment_methods = PaymentMethodController.findPayMethod(0)
+            if len(payment_methods)>0:
                 services_json = []
-                for service in services:
-                    service_dictionary = service.__dict__
-                    del service_dictionary['_sa_instance_state']
-                    services_json.append(service_dictionary)
+                for payment_method in payment_methods:
+                    payment_method_dictionary = payment_method.__dict__
+                    del payment_method_dictionary['_sa_instance_state']
+                    services_json.append(payment_method_dictionary)
                 return jsonify(services_json)
         else:
-            service = servicesController.findServices(request.json["_id"])
-            if service is None:
+            payment_method = PaymentMethodController.findPayMethod(request.json["_id"])
+            if payment_method is None:
                     return jsonify({
                         "estado" : "ADVERTENCIA",
-                        "mensaje": "No se encontro un service con el id especificado"
+                        "mensaje": "No se encontro un payment_method con el id especificado"
                     })
-            service_dictionary = service.__dict__
-            del service_dictionary['_sa_instance_state']
-            return jsonify(service_dictionary)
+            payment_method_dictionary = payment_method.__dict__
+            del payment_method_dictionary['_sa_instance_state']
+            return jsonify(payment_method_dictionary)
 
     except Exception as e:
         estado = "ERROR"
@@ -101,34 +95,31 @@ def findServices():
             "excepcion": str(e)
         })
 
-
-
 @route.route("/desactivate", methods=['POST'])
-def desactivateServices():
+def desactivatePaymentMethod():
         if "_id" not in request.json:
             return jsonify({
                 "estado" : "ADVERTENCIA",
                 "mensaje": "Ha ocurrido un error"
             })
-        if servicesController.desactivateStatus(request.json["_id"]):
+        if PaymentMethodController.desactivateStatus(request.json["_id"]):
             return jsonify({
                 "estado" : "OK",
-                "mensaje": "El servicio desactivado correctamente"
+                "mensaje": "El Metodo de pago a sido desactivado correctamente"
             })
 
 
 
 
 @route.route("/activate", methods=['POST'])
-def activateServices():
+def activatePaymentMethod():
         if "_id" not in request.json:
             return jsonify({
                 "estado" : "ADVERTENCIA",
                 "mensaje": "Ha ocurrido un error"
             })
-        if servicesController.desactivateStatus(request.json["_id"]):
+        if PaymentMethodController.activateStatus(request.json["_id"]):
             return jsonify({
                 "estado" : "OK",
-                "mensaje": "El servicio activado correctamente"
+                "mensaje": "El Metodo de pago a sido activado correctamente"
             })
-     
