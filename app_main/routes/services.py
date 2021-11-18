@@ -2,18 +2,20 @@ import flask
 from flask.globals import request
 from flask.json import jsonify
 from ..core.controller import services as servicesController
+from ..core.decorators import session
 
 route = flask.Blueprint("services_route", __name__, url_prefix="/services")
 
 
 @route.route('/add', methods=['POST'])
-def add():
+@session.validate_access(1)
+def add(current_user_id):
     # return controller.add(flask.request)
     status = ''
     message = ''
     content = ''
     try:
-        new_service = servicesController.addServices(flask.request)
+        new_service = servicesController.addServices(flask.request, current_user_id)
 
         status = "OK"
         message = "Services registered"
@@ -30,13 +32,14 @@ def add():
 
 
 @route.route('/edit', methods=['POST'])
-def edit():
+@session.validate_access(1)
+def edit(current_user_id):
     # return controller.add(flask.request)
     status = ''
     message = ''
     content = ''
     try:
-        edit_service = servicesController.editServices(flask.request)
+        edit_service = servicesController.editServices(flask.request, current_user_id)
 
         status = "OK"
         message = "Services Edited"
@@ -53,7 +56,8 @@ def edit():
 
 
 @route.route("/get", methods=['GET'])
-def getAllServices():
+@session.validate_access(1)
+def getAllServices(current_user_id):
     services  = servicesController.getServices()
     services_json = []
     for service in services:
@@ -64,7 +68,8 @@ def getAllServices():
 
 
 @route.route("/find", methods=['GET'])
-def findServices():
+@session.validate_access(1)
+def findServices(current_user_id):
     estado = "OK"
     mensaje = "Información consultada correctamente"
     try:
@@ -104,13 +109,14 @@ def findServices():
 
 
 @route.route("/desactivate", methods=['POST'])
-def desactivateServices():
+@session.validate_access(1)
+def desactivateServices(current_user_id):
         if "_id" not in request.json:
             return jsonify({
                 "estado" : "ADVERTENCIA",
                 "mensaje": "Ha ocurrido un error"
             })
-        if servicesController.desactivateStatus(request.json["_id"]):
+        if servicesController.desactivateStatus(request.json["_id"],current_user_id ):
             return jsonify({
                 "estado" : "OK",
                 "mensaje": "El servicio desactivado correctamente"
@@ -120,13 +126,14 @@ def desactivateServices():
 
 
 @route.route("/activate", methods=['POST'])
-def activateServices():
+@session.validate_access(1)
+def activateServices(current_user_id):
         if "_id" not in request.json:
             return jsonify({
                 "estado" : "ADVERTENCIA",
                 "mensaje": "Ha ocurrido un error"
             })
-        if servicesController.desactivateStatus(request.json["_id"]):
+        if servicesController.activateStatus(request.json["_id"], current_user_id):
             return jsonify({
                 "estado" : "OK",
                 "mensaje": "El servicio activado correctamente"
