@@ -6,17 +6,22 @@ route = flask.Blueprint("appointment_route", __name__,
                         url_prefix="/appointment")
 
 
-@route.route('/test', methods=['POST'])
-@session.validate_access(0)
-def create(current_user_id):
+@route.route('/add', methods=['POST'])
+@session.validate_access(1)
+def add(current_user_id):
+    status = ''
+    message = ''
+    content = ''
     try:
-        # access_code = controller.create_access_code(current_user_id)
-        return flask.jsonify({
-            "access_code": "access_code"
-        })
+        new_appointment = controller.add(flask.request, current_user_id)
 
-    except Exception as e:
-        return flask.jsonify({
-            "status": "ERROR",
-            "message": str(e)
-        })
+        status = "OK"
+        message = "Appointment registered"
+        content = new_appointment
+
+    except Exception as error:
+        status = "ERROR"
+        message = str(error)
+        content = None
+
+    return flask.jsonify({"status": status, "message": message, "content": content})
