@@ -2,17 +2,19 @@ import flask
 from flask.globals import request
 from flask.json import jsonify
 from ..core.controller import payment_method as PaymentMethodController
+from ..core.decorators import session
 
 route = flask.Blueprint("paymentmethod_route", __name__, url_prefix="/payment_method")
 
 @route.route('/add', methods=['POST'])
-def add():
+@session.validate_access(1)
+def add(current_user_id):
     # return controller.add(flask.request)
     status = ''
     message = ''
     content = ''
     try:
-        new_service = PaymentMethodController.addPaymentMethod(flask.request)
+        new_service = PaymentMethodController.addPaymentMethod(flask.request, current_user_id)
 
         status = "OK"
         message = "Payment Method registered"
@@ -27,13 +29,14 @@ def add():
 
 
 @route.route('/edit', methods=['POST'])
-def edit():
+@session.validate_access(1)
+def edit(current_user_id):
     # return controller.add(flask.request)
     status = ''
     message = ''
     content = ''
     try:
-        edit_service = PaymentMethodController.editPayMethod(flask.request)
+        edit_service = PaymentMethodController.editPayMethod(flask.request, current_user_id)
         status = "OK"
         message = "Payment method edited"
         content = edit_service
@@ -47,7 +50,8 @@ def edit():
 
 
 @route.route("/get", methods=['GET'])
-def getAllPaymentMethods():
+@session.validate_access(1)
+def getAllPaymentMethods(current_user_id):
     payment_methods  = PaymentMethodController.getPayMethod()
     payment_methods_json = []
     for payment_method in payment_methods:
@@ -58,7 +62,8 @@ def getAllPaymentMethods():
 
 
 @route.route("/find", methods=['GET'])
-def FindPaymentMethod():
+@session.validate_access(1)
+def FindPaymentMethod(current_user_id):
     estado = "OK"
     mensaje = "Información consultada correctamente"
     try:
@@ -96,13 +101,14 @@ def FindPaymentMethod():
         })
 
 @route.route("/desactivate", methods=['POST'])
-def desactivatePaymentMethod():
+@session.validate_access(1)
+def desactivatePaymentMethod(current_user_id):
         if "_id" not in request.json:
             return jsonify({
                 "estado" : "ADVERTENCIA",
                 "mensaje": "Ha ocurrido un error"
             })
-        if PaymentMethodController.desactivateStatus(request.json["_id"]):
+        if PaymentMethodController.desactivateStatus(request.json["_id"], current_user_id):
             return jsonify({
                 "estado" : "OK",
                 "mensaje": "El Metodo de pago a sido desactivado correctamente"
@@ -112,13 +118,14 @@ def desactivatePaymentMethod():
 
 
 @route.route("/activate", methods=['POST'])
-def activatePaymentMethod():
+@session.validate_access(1)
+def activatePaymentMethod(current_user_id):
         if "_id" not in request.json:
             return jsonify({
                 "estado" : "ADVERTENCIA",
                 "mensaje": "Ha ocurrido un error"
             })
-        if PaymentMethodController.activateStatus(request.json["_id"]):
+        if PaymentMethodController.activateStatus(request.json["_id"], current_user_id):
             return jsonify({
                 "estado" : "OK",
                 "mensaje": "El Metodo de pago a sido activado correctamente"

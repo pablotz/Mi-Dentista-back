@@ -12,17 +12,17 @@ def obtener_validar(json, atributo):
         raise Exception(f"Formato incorrecto en {atributo}")
     
 
-def addPaymentMethod(request):
+def addPaymentMethod(request, user_id):
     if not request.json:
         raise Exception('JSON no encontrado. El JSON es necesario para procesar la petición.')
     
     requestJSON = request.json
     name = obtener_validar(requestJSON, 'name')
-    create_by = obtener_validar(requestJSON, 'create_by')
+    # create_by = obtener_validar(requestJSON, 'create_by')
     
     new_service = model(
             name=name,
-            create_by=create_by,
+            create_by=user_id,
             estatus=1
     )
     
@@ -34,19 +34,19 @@ def addPaymentMethod(request):
     except Exception as es:
             raise Exception('Ocurrio un error')
         
-def editPayMethod(request):
+def editPayMethod(request, user_id):
     if not request.json:
         raise Exception('JSON no encontrado. El JSON es necesario para procesar la petición.')
     
     requestJSON = request.json
     id = obtener_validar(requestJSON, 'id')
     name = obtener_validar(requestJSON, 'name')
-    create_by = obtener_validar(requestJSON, 'create_by')
+    # create_by = obtener_validar(requestJSON, 'create_by')
     
     edit_PayMethod = model(
             id=id, 
             name=name,
-            create_by=create_by,
+            create_by=user_id,
             estatus=1
     )
     try:
@@ -69,20 +69,22 @@ def findPayMethod(_id):
         return db.session.query(model).filter(model.id == _id).first()
     
 
-def desactivateStatus(_id):
+def desactivateStatus(_id, user_id):
     if _id == 0:
         return "El id no puede ser cero"
     desactivatePayMethod = db.session.query(model).filter(model.id == _id).first()
     desactivatePayMethod.estatus = 0
+    desactivatePayMethod.create_by = user_id
     db.session.add(desactivatePayMethod)
     db.session.commit()
     return True
 
-def activateStatus(_id):
+def activateStatus(_id, user_id):
     if _id == 0:
         return "El id no puede ser cero"
     activatePayMethod = db.session.query(model).filter(model.id == _id).first()
     activatePayMethod.estatus = 1
+    activatePayMethod.create_by = user_id
     db.session.add(activatePayMethod)
     db.session.commit()
     return True
