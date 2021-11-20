@@ -67,3 +67,24 @@ def cancel(current_user_id):
         content = None
 
     return flask.jsonify({"status": status, "message": message, "content": content})
+
+
+@route.route('/get_by_user', methods=['POST'])
+@session.validate_access(0)
+def get_by_user(current_user_id):
+    status = ''
+    message = ''
+    content = ''
+    try:
+        appointments = controller.get_by_user(current_user_id)
+
+        status = "OK"
+        message = "Appointments retrieved"
+        content = appointments
+
+    except Exception as error:
+        status = "ERROR"
+        message = str(error)
+        content = None
+
+    return flask.jsonify({"status": status, "message": message, "content": content})

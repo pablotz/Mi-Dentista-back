@@ -169,3 +169,18 @@ def cancel(request):
     appointment.status = 0
     db.session.commit()
     return None
+
+
+def get_by_user(user_id):
+    result = model.query.filter(
+        model.user_id == user_id, model.status == 1).all()
+
+    data = []
+    for row in result:
+        dic = row.__dict__
+        del dic['_sa_instance_state']
+        del dic['user_id']
+        dic['service'] = findServices(row.service_id).name
+        data.append(dic)
+
+    return data
