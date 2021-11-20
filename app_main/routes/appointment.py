@@ -7,7 +7,7 @@ route = flask.Blueprint("appointment_route", __name__,
 
 
 @route.route('/add', methods=['POST'])
-@session.validate_access(1)
+@session.validate_access(0)
 def add(current_user_id):
     status = ''
     message = ''
@@ -28,7 +28,7 @@ def add(current_user_id):
 
 
 @route.route('/get_valid_hours', methods=['POST'])
-@session.validate_access(1)
+@session.validate_access(0)
 def get_valid_hours(current_user_id):
     status = ''
     message = ''
