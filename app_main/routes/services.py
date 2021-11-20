@@ -57,7 +57,7 @@ def edit(current_user_id):
 
 
 @route.route("/get", methods=['GET'])
-@session.validate_access(0,1)
+@session.validate_access([0,1])
 def getAllServices(current_user_id):
     #controlador con su json 
     services  = servicesController.getServices()
@@ -106,7 +106,7 @@ def getAllServices(current_user_id):
 
 
 @route.route("/find", methods=['GET'])
-@session.validate_access(0,1)
+@session.validate_access([0,1])
 def findServices(current_user_id):
     estado = "OK"
     mensaje = "Información consultada correctamente"
