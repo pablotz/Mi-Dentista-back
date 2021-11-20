@@ -46,3 +46,24 @@ def get_valid_hours(current_user_id):
         content = None
 
     return flask.jsonify({"status": status, "message": message, "content": content})
+
+
+@route.route('/cancel', methods=['POST'])
+@session.validate_access(0)
+def cancel(current_user_id):
+    status = ''
+    message = ''
+    content = ''
+    try:
+        appointment = controller.cancel(flask.request)
+
+        status = "OK"
+        message = "Appointment canceled"
+        content = appointment
+
+    except Exception as error:
+        status = "ERROR"
+        message = str(error)
+        content = None
+
+    return flask.jsonify({"status": status, "message": message, "content": content})

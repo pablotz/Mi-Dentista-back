@@ -147,3 +147,23 @@ def get_or_error(json, atributo):
 
     except Exception:
         raise Exception(f"Formato incorrecto en {atributo}")
+
+
+def cancel(request):
+    if not request.json:
+        raise Exception(
+            'JSON not found. The JSON is necessary to process the request.')
+
+    requestJSON = request.json
+    id = get_or_error(requestJSON, 'id')
+
+    appointment = model.query.filter(model.id == id).first()
+    if appointment is None:
+        raise Exception('Appointment not found')
+
+    if appointment.status != 1:
+        raise Exception('Appointment already canceled')
+
+    appointment.status = 0
+    db.session.commit()
+    return None
