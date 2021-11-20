@@ -1,6 +1,6 @@
 from re import search
 from flask import app
-from sqlalchemy.sql.expression import false, true
+from sqlalchemy.sql.expression import extract, false, true
 from ..model.appointment import appointment as model
 from ..controller.services import findServices
 from ...connection import db
@@ -174,6 +174,30 @@ def cancel(request):
 def get_by_user(user_id):
     result = model.query.filter(
         model.user_id == user_id, model.status == 1).all()
+
+    data = []
+    for row in result:
+        dic = row.__dict__
+        del dic['_sa_instance_state']
+        del dic['user_id']
+        dic['service'] = findServices(row.service_id).name
+        data.append(dic)
+
+    return data
+
+
+def get_by_month(request):
+    if not request.json:
+        raise Exception(
+            'JSON not found. The JSON is necessary to process the request.')
+
+    requestJSON = request.json
+    month = get_or_error(requestJSON, 'month')
+    year = datetime.now().year
+
+    result = model.query.filter(
+        extract('month', model.start_date_time) == month).filter(
+            extract('year', model.start_date_time) == year).all()
 
     data = []
     for row in result:
