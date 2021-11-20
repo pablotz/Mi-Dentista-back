@@ -52,7 +52,8 @@ def get_valid_hours(request):
             INNER JOIN
         services AS s ON a.service_id = s.id
     WHERE
-        a.start_date_time <= '{request_date} 23:59:59'
+        a.status = 1
+            AND a.start_date_time <= '{request_date} 23:59:59'
             AND a.start_date_time >='{request_date} 00:00:00'
     ORDER BY a.start_date_time ASC;
                 """)
@@ -133,7 +134,8 @@ def validate_availability(new_datetime):
                 INNER JOIN
             services AS s ON a.service_id = s.id
         WHERE
-            a.start_date_time <= '{new_datetime}'
+            a.status = 1
+                AND a.start_date_time <= '{new_datetime}'
                 AND a.start_date_time + INTERVAL s.duration MINUTE > '{new_datetime}';
                 """)
     row = result.fetchone()
