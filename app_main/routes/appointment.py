@@ -7,7 +7,7 @@ route = flask.Blueprint("appointment_route", __name__,
 
 
 @route.route('/add', methods=['POST'])
-@session.validate_access(0)
+@session.validate_access([0])
 def add(current_user_id):
     status = ''
     message = ''
@@ -28,7 +28,7 @@ def add(current_user_id):
 
 
 @route.route('/get_valid_hours', methods=['POST'])
-@session.validate_access(0)
+@session.validate_access([0])
 def get_valid_hours(current_user_id):
     status = ''
     message = ''
@@ -49,7 +49,7 @@ def get_valid_hours(current_user_id):
 
 
 @route.route('/cancel', methods=['POST'])
-@session.validate_access(0)
+@session.validate_access([0])
 def cancel(current_user_id):
     status = ''
     message = ''
@@ -70,7 +70,7 @@ def cancel(current_user_id):
 
 
 @route.route('/get_by_user', methods=['POST'])
-@session.validate_access(0)
+@session.validate_access([0])
 def get_by_user(current_user_id):
     status = ''
     message = ''
@@ -91,7 +91,7 @@ def get_by_user(current_user_id):
 
 
 @route.route('/get_by_month', methods=['POST'])
-@session.validate_access(1)
+@session.validate_access([1])
 def get_by_month(current_user_id):
     status = ''
     message = ''
@@ -112,7 +112,7 @@ def get_by_month(current_user_id):
 
 
 @route.route('/get_by_period', methods=['POST'])
-@session.validate_access(1)
+@session.validate_access([1])
 def get_by_period(current_user_id):
     status = ''
     message = ''

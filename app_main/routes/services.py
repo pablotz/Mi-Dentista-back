@@ -9,14 +9,15 @@ route = flask.Blueprint("services_route", __name__, url_prefix="/services")
 
 
 @route.route('/add', methods=['POST'])
-@session.validate_access(1)
+@session.validate_access([1])
 def add(current_user_id):
     # return controller.add(flask.request)
     status = ''
     message = ''
     content = ''
     try:
-        new_service = servicesController.addServices(flask.request, current_user_id)
+        new_service = servicesController.addServices(
+            flask.request, current_user_id)
 
         status = "OK"
         message = "Services registered"
@@ -30,17 +31,16 @@ def add(current_user_id):
     return flask.jsonify({"status": status, "message": message, "content": content})
 
 
-
-
 @route.route('/edit', methods=['POST'])
-@session.validate_access(1)
+@session.validate_access([1])
 def edit(current_user_id):
     # return controller.add(flask.request)
     status = ''
     message = ''
     content = ''
     try:
-        edit_service = servicesController.editServices(flask.request, current_user_id)
+        edit_service = servicesController.editServices(
+            flask.request, current_user_id)
 
         status = "OK"
         message = "Services Edited"
@@ -54,13 +54,11 @@ def edit(current_user_id):
     return flask.jsonify({"status": status, "message": message, "content": content})
 
 
-
-
 @route.route("/get", methods=['GET'])
-@session.validate_access([0,1])
+@session.validate_access([0, 1])
 def getAllServices(current_user_id):
-    #controlador con su json 
-    services  = servicesController.getServices()
+    # controlador con su json
+    services = servicesController.getServices()
     services_json = []
     for service in services:
         id = service.id
@@ -68,23 +66,23 @@ def getAllServices(current_user_id):
         formats_json = []
         if format is None:
             return jsonify({
-                "estado" : "ADVERTENCIA",
+                "estado": "ADVERTENCIA",
                 "mensaje": "No se encontro un service con el id especificado"
-                })
+            })
         else:
             format = servicesController.minutesConvert(id)
             formats_json = []
             if format is None:
-                    return jsonify({
-                        "estado" : "ADVERTENCIA",
-                        "mensaje": "No se encontro un service con el id especificado"
-                    })
+                return jsonify({
+                    "estado": "ADVERTENCIA",
+                    "mensaje": "No se encontro un service con el id especificado"
+                })
             minutos = format.duration
             if minutos <= 59:
                 hrs = minutos/60
                 second = hrs*3600
-                min = str(datetime.timedelta(seconds = second))
-                xd = min[0:4]    
+                min = str(datetime.timedelta(seconds=second))
+                xd = min[0:4]
                 formats_json.append({
                     'duration': xd,
                     'format': 'min.'
@@ -92,10 +90,10 @@ def getAllServices(current_user_id):
             else:
                 hrs = minutos/60
                 second = hrs*3600
-                horas = str(datetime.timedelta(seconds = second))
+                horas = str(datetime.timedelta(seconds=second))
                 xd = horas[0:4]
                 formats_json.append({
-                    'duration' : xd,
+                    'duration': xd,
                     'format': 'hrs.'
                 })
         services_dictionary = service.__dict__
@@ -106,18 +104,18 @@ def getAllServices(current_user_id):
 
 
 @route.route("/find", methods=['GET'])
-@session.validate_access([0,1])
+@session.validate_access([0, 1])
 def findServices(current_user_id):
     estado = "OK"
     mensaje = "Información consultada correctamente"
     try:
         print(request.json)
         print("_id" not in request.json)
-        
+
         if "_id" not in request.json or request.json["_id"] == 0:
             print("test")
             services = servicesController.findServices(0)
-            if len(services)>0:
+            if len(services) > 0:
                 services_json = []
                 for service in services:
                     service_dictionary = service.__dict__
@@ -127,10 +125,10 @@ def findServices(current_user_id):
         else:
             service = servicesController.findServices(request.json["_id"])
             if service is None:
-                    return jsonify({
-                        "estado" : "ADVERTENCIA",
-                        "mensaje": "No se encontro un service con el id especificado"
-                    })
+                return jsonify({
+                    "estado": "ADVERTENCIA",
+                    "mensaje": "No se encontro un service con el id especificado"
+                })
             service_dictionary = service.__dict__
             del service_dictionary['_sa_instance_state']
             return jsonify(service_dictionary)
@@ -139,44 +137,41 @@ def findServices(current_user_id):
         estado = "ERROR"
         mensaje = "Ha ocurrido un error! Por favor verificalo con un administrador"
         return jsonify({
-            "estado"  : estado,
-            "mensaje" : mensaje,
+            "estado": estado,
+            "mensaje": mensaje,
             "excepcion": str(e)
         })
 
 
-
 @route.route("/desactivate", methods=['POST'])
-@session.validate_access(1)
+@session.validate_access([1])
 def desactivateServices(current_user_id):
-        if "_id" not in request.json:
-            return jsonify({
-                "estado" : "ADVERTENCIA",
-                "mensaje": "Ha ocurrido un error"
-            })
-        if servicesController.desactivateStatus(request.json["_id"],current_user_id ):
-            return jsonify({
-                "estado" : "OK",
-                "mensaje": "El servicio desactivado correctamente"
-            })
-
-
+    if "_id" not in request.json:
+        return jsonify({
+            "estado": "ADVERTENCIA",
+            "mensaje": "Ha ocurrido un error"
+        })
+    if servicesController.desactivateStatus(request.json["_id"], current_user_id):
+        return jsonify({
+            "estado": "OK",
+            "mensaje": "El servicio desactivado correctamente"
+        })
 
 
 @route.route("/activate", methods=['POST'])
-@session.validate_access(1)
+@session.validate_access([1])
 def activateServices(current_user_id):
-        if "_id" not in request.json:
-            return jsonify({
-                "estado" : "ADVERTENCIA",
-                "mensaje": "Ha ocurrido un error"
-            })
-        if servicesController.activateStatus(request.json["_id"], current_user_id):
-            return jsonify({
-                "estado" : "OK",
-                "mensaje": "El servicio activado correctamente"
-            })
-    
+    if "_id" not in request.json:
+        return jsonify({
+            "estado": "ADVERTENCIA",
+            "mensaje": "Ha ocurrido un error"
+        })
+    if servicesController.activateStatus(request.json["_id"], current_user_id):
+        return jsonify({
+            "estado": "OK",
+            "mensaje": "El servicio activado correctamente"
+        })
+
 
 @route.route("/test2", methods=['GET'])
 def newxd():
@@ -185,23 +180,23 @@ def newxd():
     try:
         print(request.json)
         print("_id" not in request.json)
-        
+
         if "_id" not in request.json or request.json["_id"] == 0:
             print("test")
         else:
             format = servicesController.minutesConvert(request.json["_id"])
             formats_json = []
             if format is None:
-                    return jsonify({
-                        "estado" : "ADVERTENCIA",
-                        "mensaje": "No se encontro un service con el id especificado"
-                    })
+                return jsonify({
+                    "estado": "ADVERTENCIA",
+                    "mensaje": "No se encontro un service con el id especificado"
+                })
             minutos = format.duration
             if minutos <= 59:
                 hrs = minutos/60
                 second = hrs*3600
-                min = str(datetime.timedelta(seconds = second))
-                xd = min[0:4]    
+                min = str(datetime.timedelta(seconds=second))
+                xd = min[0:4]
                 formats_json.append({
                     'duration': xd,
                     'format': 'min.'
@@ -209,19 +204,19 @@ def newxd():
             else:
                 hrs = minutos/60
                 second = hrs*3600
-                horas = str(datetime.timedelta(seconds = second))
+                horas = str(datetime.timedelta(seconds=second))
                 xd = horas[0:4]
                 formats_json.append({
-                    'duration' : xd,
+                    'duration': xd,
                     'format': 'hrs.'
                 })
             return jsonify(formats_json)
-        
+
     except Exception as e:
         estado = "ERROR"
         mensaje = "Ha ocurrido un error! Por favor verificalo con un administrador"
         return jsonify({
-            "estado"  : estado,
-            "mensaje" : mensaje,
+            "estado": estado,
+            "mensaje": mensaje,
             "excepcion": str(e)
         })

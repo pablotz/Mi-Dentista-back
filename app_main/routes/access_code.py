@@ -7,7 +7,7 @@ route = flask.Blueprint("access_code_route", __name__,
 
 
 @route.route('/create', methods=['POST'])
-@session.validate_access(1)
+@session.validate_access([1])
 def create(current_user_id):
     try:
         access_code = controller.create_access_code(current_user_id)

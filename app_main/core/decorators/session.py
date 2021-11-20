@@ -40,7 +40,7 @@ def validate_access(required_role):
                         "message": "User not found."
                     })
 
-                if user.user_role != required_role:
+                if user.user_role not in required_role:
                     return jsonify({
                         "status": "ERROR",
                         "message": "Access denied."
