@@ -11,6 +11,7 @@ class appointment(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     start_date_time = db.Column(db.DateTime, nullable=False)
+    status = db.Column(db.Integer, default=1)
     created_at = db.Column(db.DateTime(timezone=True),
                            server_default=func.now())
     user_id = db.Column(db.Integer, db.ForeignKey(
