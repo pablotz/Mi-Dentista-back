@@ -98,3 +98,13 @@ def activateStatus(_id, user_id):
     db.session.add(activateServices)
     db.session.commit()
     return True
+
+
+
+def minutesConvert(_id):
+     if _id == 0:
+        return model.query.all()
+     else:
+        return db.session.query(model).filter(model.id == _id).first()
+ 
+ 
