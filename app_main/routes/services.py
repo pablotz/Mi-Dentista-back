@@ -3,6 +3,7 @@ from flask.globals import request
 from flask.json import jsonify
 from ..core.controller import services as servicesController
 from ..core.decorators import session
+import datetime
 
 route = flask.Blueprint("services_route", __name__, url_prefix="/services")
 
@@ -58,11 +59,48 @@ def edit(current_user_id):
 @route.route("/get", methods=['GET'])
 @session.validate_access(1)
 def getAllServices(current_user_id):
+    #controlador con su json 
     services  = servicesController.getServices()
     services_json = []
     for service in services:
+        id = service.id
+        format = servicesController.minutesConvert(id)
+        formats_json = []
+        if format is None:
+            return jsonify({
+                "estado" : "ADVERTENCIA",
+                "mensaje": "No se encontro un service con el id especificado"
+                })
+        else:
+            format = servicesController.minutesConvert(id)
+            formats_json = []
+            if format is None:
+                    return jsonify({
+                        "estado" : "ADVERTENCIA",
+                        "mensaje": "No se encontro un service con el id especificado"
+                    })
+            minutos = format.duration
+            if minutos <= 59:
+                hrs = minutos/60
+                second = hrs*3600
+                min = str(datetime.timedelta(seconds = second))
+                xd = min[0:4]    
+                formats_json.append({
+                    'duration': xd,
+                    'format': 'min.'
+                })
+            else:
+                hrs = minutos/60
+                second = hrs*3600
+                horas = str(datetime.timedelta(seconds = second))
+                xd = horas[0:4]
+                formats_json.append({
+                    'duration' : xd,
+                    'format': 'hrs.'
+                })
         services_dictionary = service.__dict__
         del services_dictionary['_sa_instance_state']
+        services_dictionary['systemformat'] = formats_json
         services_json.append(services_dictionary)
     return jsonify(services_json)
 
@@ -138,4 +176,52 @@ def activateServices(current_user_id):
                 "estado" : "OK",
                 "mensaje": "El servicio activado correctamente"
             })
-     
+    
+
+@route.route("/test2", methods=['GET'])
+def newxd():
+    estado = "OK"
+    mensaje = "Información consultada correctamente"
+    try:
+        print(request.json)
+        print("_id" not in request.json)
+        
+        if "_id" not in request.json or request.json["_id"] == 0:
+            print("test")
+        else:
+            format = servicesController.minutesConvert(request.json["_id"])
+            formats_json = []
+            if format is None:
+                    return jsonify({
+                        "estado" : "ADVERTENCIA",
+                        "mensaje": "No se encontro un service con el id especificado"
+                    })
+            minutos = format.duration
+            if minutos <= 59:
+                hrs = minutos/60
+                second = hrs*3600
+                min = str(datetime.timedelta(seconds = second))
+                xd = min[0:4]    
+                formats_json.append({
+                    'duration': xd,
+                    'format': 'min.'
+                })
+            else:
+                hrs = minutos/60
+                second = hrs*3600
+                horas = str(datetime.timedelta(seconds = second))
+                xd = horas[0:4]
+                formats_json.append({
+                    'duration' : xd,
+                    'format': 'hrs.'
+                })
+            return jsonify(formats_json)
+        
+    except Exception as e:
+        estado = "ERROR"
+        mensaje = "Ha ocurrido un error! Por favor verificalo con un administrador"
+        return jsonify({
+            "estado"  : estado,
+            "mensaje" : mensaje,
+            "excepcion": str(e)
+        })
