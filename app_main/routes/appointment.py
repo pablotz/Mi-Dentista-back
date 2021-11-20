@@ -109,3 +109,24 @@ def get_by_month(current_user_id):
         content = None
 
     return flask.jsonify({"status": status, "message": message, "content": content})
+
+
+@route.route('/get_by_period', methods=['POST'])
+@session.validate_access(1)
+def get_by_period(current_user_id):
+    status = ''
+    message = ''
+    content = ''
+    try:
+        appointments = controller.get_by_period(flask.request)
+
+        status = "OK"
+        message = "Appointments retrieved"
+        content = appointments
+
+    except Exception as error:
+        status = "ERROR"
+        message = str(error)
+        content = None
+
+    return flask.jsonify({"status": status, "message": message, "content": content})

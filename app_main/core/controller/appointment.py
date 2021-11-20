@@ -208,3 +208,30 @@ def get_by_month(request):
         data.append(dic)
 
     return data
+
+
+def get_by_period(request):
+    if not request.json:
+        raise Exception(
+            'JSON not found. The JSON is necessary to process the request.')
+
+    requestJSON = request.json
+    start_date = get_or_error(requestJSON, 'start_date')
+    end_date = get_or_error(requestJSON, 'end_date')
+
+    if start_date > end_date:
+        raise Exception('Start date must be less than end date')
+
+    result = model.query.filter(
+        model.start_date_time >= start_date,
+        model.start_date_time <= f'{end_date} 23:59:59').all()
+
+    data = []
+    for row in result:
+        dic = row.__dict__
+        del dic['_sa_instance_state']
+        del dic['user_id']
+        dic['service'] = findServices(row.service_id).name
+        data.append(dic)
+
+    return data
