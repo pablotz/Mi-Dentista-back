@@ -42,6 +42,9 @@ def get_valid_hours(request):
     request_service = get_or_error(requestJSON, 'service')
     service = findServices(request_service)
 
+    if service is None:
+        raise Exception('Service not found')
+
     result = db.engine.execute(
         f"""
     SELECT
