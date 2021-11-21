@@ -60,8 +60,6 @@ def get_valid_hours(request):
             AND a.start_date_time >='{request_date} 00:00:00'
     ORDER BY a.start_date_time ASC;
                 """)
-    if result.rowcount == 0:
-        return ["jiji", "jaja"]
 
     raw_data = result.fetchall()
     return clear_hours(raw_data, service.duration, request_date)
@@ -74,6 +72,10 @@ def clear_hours(raw_data, duration, request_date):
         f'{request_date} 20:00:00', '%Y-%m-%d %H:%M:%S')
     time_lapse = 5
     data = []
+
+    if len(raw_data) == 0:
+        # Return all hours
+        return divide_into_timelapse([[start_labour_hour, end_labour_hour]], time_lapse)
 
     last_index = len(raw_data) - 1
     for idx, row in enumerate(raw_data):
