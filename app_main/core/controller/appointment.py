@@ -193,7 +193,10 @@ def get_by_user(user_id):
         dic = row.__dict__
         del dic['_sa_instance_state']
         del dic['user_id']
-        dic['service'] = findServices(row.service_id).name
+        obj_service = findServices(row.service_id)
+        dic['service'] = obj_service.name
+        dic['end_date_time'] = dic['start_date_time'] + \
+            timedelta(minutes=obj_service.duration)
         data.append(dic)
 
     return data
@@ -217,7 +220,10 @@ def get_by_month(request):
         dic = row.__dict__
         del dic['_sa_instance_state']
         del dic['user_id']
-        dic['service'] = findServices(row.service_id).name
+        obj_service = findServices(row.service_id)
+        dic['service'] = obj_service.name
+        dic['end_date_time'] = dic['start_date_time'] + \
+            timedelta(minutes=obj_service.duration)
         data.append(dic)
 
     return data
@@ -244,7 +250,10 @@ def get_by_period(request):
         dic = row.__dict__
         del dic['_sa_instance_state']
         del dic['user_id']
-        dic['service'] = findServices(row.service_id).name
+        obj_service = findServices(row.service_id)
+        dic['service'] = obj_service.name
+        dic['end_date_time'] = dic['start_date_time'] + \
+            timedelta(minutes=obj_service.duration)
         data.append(dic)
 
     return data
