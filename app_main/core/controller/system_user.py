@@ -50,6 +50,73 @@ def add(request):
     return buscar_id(new_user.id)
 
 
+def edit(request):
+    if not request.json:
+        raise Exception('JSON no encontrado. El JSON es necesario para procesar la petición.')
+    
+    requestJSON = request.json
+    id = get_or_error(requestJSON, 'id')
+    name = get_or_error(requestJSON, 'name')
+    lastName = get_or_error(requestJSON, 'lastName')
+    email = get_or_error(requestJSON, 'email')
+    phone = get(requestJSON, 'phone')
+    password = get_or_error(requestJSON, 'password')
+    role = get_or_error(requestJSON, 'role')
+    
+    if(role == "admin"):
+        role = 1
+    else:
+        role = 0
+    #create_by = obtener_validar(requestJSON, 'create_by')
+    
+    edit_user = model(
+           id=id, 
+           user_name=name,
+           last_name=lastName,
+           email=email,
+           user_password=generate_password_hash(password, method='sha256'),
+           phone=phone,
+           user_role=role
+    )
+    try:
+        editUser =  db.session.query(model).filter(model.id == edit_user.id).first()
+        editUser.user_name = edit_user.user_name
+        editUser.last_name = edit_user.last_name
+        editUser.email = edit_user.email
+        editUser.user_password = edit_user.user_password
+        editUser.phone = edit_user.phone
+        editUser.user_role = edit_user.user_role
+        db.session.add(editUser)
+        db.session.commit()
+        
+        return {'message': 'usuario editado exitosamente'}
+    except Exception as es:
+            raise Exception('Ocurrio un error', es)
+        
+
+def desactivate(_id):
+    if _id == 0:
+        return "El id no puede ser cero"
+    desactivateUser = db.session.query(model).filter(model.id == _id).first()
+    desactivateUser.user_status = 0
+    db.session.add(desactivateUser)
+    db.session.commit()
+    return True
+
+def activate(_id):
+    if _id == 0:
+        return "El id no puede ser cero"
+    activateUser = db.session.query(model).filter(model.id == _id).first()
+    activateUser.user_status = 1
+    db.session.add(activateUser)
+    db.session.commit()
+    return True
+
+
+def getUser():
+    return model.query.all()
+    
+
 def get_or_error(json, atributo):
     try:
         return json[atributo]
@@ -65,7 +132,6 @@ def get(json, atributo):
     except Exception:
         return None
 
-
 def check(email):
     if(not re.fullmatch(regex, email)):
         raise Exception("Invalid Email")
@@ -80,3 +146,4 @@ def buscar_id(id):
     del dic['user_password']
 
     return dic
+

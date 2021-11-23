@@ -18,7 +18,7 @@ def login():
         })
     user_json = request.json
     user = model.query.filter_by(
-        email=user_json["email"], user_status=1).first()
+        email = user_json["email"], user_status=1).first()
 
     if user and check_password_hash(user.user_password, user_json["user_password"]):
         expires_at = str(datetime.datetime.utcnow() +
@@ -29,9 +29,16 @@ def login():
 
         return flask.jsonify({
             "status": True,
-            "expires_on": 1800,
+            "expires_on": 60*60*24*10,
             "token": token,
-            "user": user.email
+            "user_data": {
+                "email": user.email,
+                "user_name": user.user_name,
+                "last_name": user.last_name,
+                "phone" : user.phone,
+                "user_role": user.user_role,
+                "access_code" : user.access_code,
+             }
         })
 
     return flask.jsonify({
