@@ -37,7 +37,7 @@ def get_valid_hours(current_user_id):
         available_hours = controller.get_valid_hours(flask.request)
 
         status = "OK"
-        message = "Appointment registered"
+        message = "Hours found"
         content = available_hours
 
     except Exception as error:
