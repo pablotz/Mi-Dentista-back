@@ -194,7 +194,11 @@ def get_by_user(user_id):
         del dic['_sa_instance_state']
         del dic['user_id']
         obj_service = findServices(row.service_id)
-        dic['service'] = obj_service.name
+        dic['service'] = {
+            'name': obj_service.name,
+            'duration': obj_service.duration,
+            'price': obj_service.price
+        }
         dic['end_date_time'] = dic['start_date_time'] + \
             timedelta(minutes=obj_service.duration)
         data.append(dic)
