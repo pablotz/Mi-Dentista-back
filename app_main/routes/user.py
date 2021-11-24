@@ -30,8 +30,8 @@ def add():
 
 @route.route("/get", methods=['GET'])
 @session.validate_access([1])
-def getAllUsers():
-    users = controller.getUser()
+def getAllUsers(current_user):
+    users = controller.getUser(current_user)
     users_json = []
     for user in users:
         users_dictionary = user.__dict__
@@ -41,15 +41,37 @@ def getAllUsers():
 
 
 
-@route.route('/edit', methods=['POST'])
+@route.route('/editme', methods=['POST'])
 @session.validate_access([1])
-def edit():
+def editme(current_user):
     # return controller.add(flask.request)
     status = ''
     message = ''
     content = ''
     try:
-        edit_user = controller.edit(flask.request)
+        edit_user = controller.editMe(flask.request, current_user)
+
+        status = "OK"
+        message = "user Edited"
+        content = edit_user
+
+    except Exception as error:
+        status = "ERROR"
+        message = str(error)
+        content = None
+
+    return flask.jsonify({"status": status, "message": message, "content": content})
+
+
+@route.route('/edit', methods=['POST'])
+@session.validate_access([1])
+def edit(current_user):
+    # return controller.add(flask.request)
+    status = ''
+    message = ''
+    content = ''
+    try:
+        edit_user = controller.edit(flask.request, current_user)
 
         status = "OK"
         message = "user Edited"
@@ -90,4 +112,24 @@ def activate():
         return flask.jsonify({
             "estado": "OK",
             "mensaje": "El usuario activado correctamente"
+        })
+
+@route.route("/findme", methods=['GET'])
+@session.validate_access([0, 1])
+def findServices(current_user_id):
+    estado = "OK"
+    mensaje = "Información consultada correctamente"
+    try:
+        user = controller.findMe(current_user_id)
+        users_dictionary = user.__dict__
+        del users_dictionary['_sa_instance_state']
+        return flask.jsonify(users_dictionary)
+
+    except Exception as e:
+        estado = "ERROR"
+        mensaje = "Ha ocurrido un error! Por favor verificalo con un administrador"
+        return flask.jsonify({
+            "estado": estado,
+            "mensaje": mensaje,
+            "excepcion": str(e)
         })

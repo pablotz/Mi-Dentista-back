@@ -32,6 +32,7 @@ def login():
             "expires_on": 60*60*24*10,
             "token": token,
             "user_data": {
+                "id": user.id,
                 "email": user.email,
                 "user_name": user.user_name,
                 "last_name": user.last_name,
