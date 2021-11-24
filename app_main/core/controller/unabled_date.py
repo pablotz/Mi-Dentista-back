@@ -27,7 +27,8 @@ def add(request, user_id):
 
 
 def get_all():
-    unabled_dates = model.query.all()
+    # Get all unabled_date sorted by date
+    unabled_dates = model.query.order_by(model.date).all()
 
     dic = [unabled_date.__dict__ for unabled_date in unabled_dates]
     for i in range(len(dic)):
