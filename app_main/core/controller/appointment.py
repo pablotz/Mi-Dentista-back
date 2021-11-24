@@ -3,6 +3,7 @@ from flask import app
 from sqlalchemy.sql.expression import extract, false, true
 from ..model.appointment import appointment as model
 from ..controller.services import findServices
+from ..controller.unabled_date import find_by_date
 from ...connection import db
 from datetime import datetime, timedelta, date
 
@@ -13,6 +14,8 @@ def add(request, user_id):
             'JSON no encontrado. El JSON es necesario para procesar la petición.')
 
     requestJSON = request.json
+
+    is_date_available(requestJSON["date"])
 
     start_date_time = datetime.fromisoformat(
         f"{requestJSON['date']} {requestJSON['hour']}")
@@ -31,6 +34,11 @@ def add(request, user_id):
     return search(new_appointment.id)
 
 
+def is_date_available(date):
+    if find_by_date(date):
+        raise Exception('Date is not available')
+
+
 def get_valid_hours(request):
     if not request.json:
         raise Exception(
@@ -38,6 +46,8 @@ def get_valid_hours(request):
 
     requestJSON = request.json
     request_date = get_or_error(requestJSON, 'date')
+
+    is_date_available(request_date)
 
     request_service = get_or_error(requestJSON, 'service')
     service = findServices(request_service)

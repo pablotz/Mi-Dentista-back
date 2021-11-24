@@ -38,6 +38,11 @@ def get_all():
     return dic
 
 
+def find_by_date(date):
+    is_date(date)
+    return True if model.query.filter(model.date == date).first() else False
+
+
 def delete(date):
     unabled_date = model.query.filter(model.date == date).first()
     db.session.delete(unabled_date)
