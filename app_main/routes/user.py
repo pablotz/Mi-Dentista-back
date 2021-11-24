@@ -42,7 +42,7 @@ def getAllUsers(current_user):
 
 
 @route.route('/editme', methods=['POST'])
-@session.validate_access([1])
+@session.validate_access([0, 1])
 def editme(current_user):
     # return controller.add(flask.request)
     status = ''
