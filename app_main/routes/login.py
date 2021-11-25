@@ -22,7 +22,7 @@ def login():
 
     if user and check_password_hash(user.user_password, user_json["user_password"]):
         expires_at = str(datetime.datetime.utcnow() +
-                         datetime.timedelta(minutes=30))
+                         datetime.timedelta(minutes=60*24*10))
 
         token = jwt.encode({'public_id': user.id, 'expires_at': expires_at},
                            flask.current_app.config['SECRET_KEY'])
