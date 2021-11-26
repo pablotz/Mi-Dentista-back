@@ -28,7 +28,7 @@ def add(current_user_id):
 
 
 @route.route('get_all', methods=['GET'])
-@session.validate_access([1])
+@session.validate_access([1, 0])
 def get_all(current_user_id):
     status = ''
     message = ''
