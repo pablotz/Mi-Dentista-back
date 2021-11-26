@@ -243,6 +243,7 @@ def get_by_month(request):
             'id': obj_user.id,
             'name': obj_user.user_name,
             'last_name': obj_user.last_name,
+            'phone': obj_user.phone
         }
         del dic['user_id']
         data.append(dic)
@@ -279,6 +280,7 @@ def get_by_period(request):
             'id': obj_user.id,
             'name': obj_user.user_name,
             'last_name': obj_user.last_name,
+            'phone': obj_user.phone
         }
         del dic['user_id']
         data.append(dic)
