@@ -4,6 +4,7 @@ from sqlalchemy.sql.expression import extract, false, true
 from ..model.appointment import appointment as model
 from ..controller.services import findServices
 from ..controller.unabled_date import find_by_date
+from ..controller.system_user import findMe as findUser
 from ...connection import db
 from datetime import datetime, timedelta, date
 
@@ -233,11 +234,17 @@ def get_by_month(request):
     for row in result:
         dic = row.__dict__
         del dic['_sa_instance_state']
-        del dic['user_id']
         obj_service = findServices(row.service_id)
         dic['service'] = obj_service.name
         dic['end_date_time'] = dic['start_date_time'] + \
             timedelta(minutes=obj_service.duration)
+        obj_user = findUser(row.user_id)
+        dic['user'] = {
+            'id': obj_user.id,
+            'name': obj_user.user_name,
+            'last_name': obj_user.last_name,
+        }
+        del dic['user_id']
         data.append(dic)
 
     return data
@@ -263,11 +270,17 @@ def get_by_period(request):
     for row in result:
         dic = row.__dict__
         del dic['_sa_instance_state']
-        del dic['user_id']
         obj_service = findServices(row.service_id)
         dic['service'] = obj_service.name
         dic['end_date_time'] = dic['start_date_time'] + \
             timedelta(minutes=obj_service.duration)
+        obj_user = findUser(row.user_id)
+        dic['user'] = {
+            'id': obj_user.id,
+            'name': obj_user.user_name,
+            'last_name': obj_user.last_name,
+        }
+        del dic['user_id']
         data.append(dic)
 
     return data
