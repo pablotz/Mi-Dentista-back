@@ -7,7 +7,6 @@ route = flask.Blueprint("user_route", __name__, url_prefix="/user")
 
 
 @route.route('/add', methods=['POST'])
-@session.validate_access([1])
 def add():
     # return controller.add(flask.request)
     status = ''
@@ -38,7 +37,6 @@ def getAllUsers(current_user):
         del users_dictionary['_sa_instance_state']
         users_json.append(users_dictionary)
     return flask.jsonify(users_json)
-
 
 
 @route.route('/editme', methods=['POST'])
@@ -113,6 +111,7 @@ def activate():
             "estado": "OK",
             "mensaje": "El usuario activado correctamente"
         })
+
 
 @route.route("/findme", methods=['GET'])
 @session.validate_access([0, 1])
