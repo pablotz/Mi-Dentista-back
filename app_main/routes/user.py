@@ -85,13 +85,14 @@ def edit(current_user):
 
 @route.route("/desactivate", methods=['POST'])
 @session.validate_access([1])
-def desactivate():
+def desactivate(cuerrt_user):
     if "_id" not in request.json:
         return flask.jsonify({
             "estado": "ADVERTENCIA",
             "mensaje": "Ha ocurrido un error"
         })
-    if controller.desactivate(request.json["_id"]):
+        
+    if controller.desactivate(request.json["_id"], cuerrt_user):
         return flask.jsonify({
             "estado": "OK",
             "mensaje": "El usuario desactivado correctamente"
@@ -100,13 +101,13 @@ def desactivate():
 
 @route.route("/activate", methods=['POST'])
 @session.validate_access([1])
-def activate():
+def activate(cuerrt_user):
     if "_id" not in request.json:
         return flask.jsonify({
             "estado": "ADVERTENCIA",
             "mensaje": "Ha ocurrido un error"
         })
-    if controller.activate(request.json["_id"]):
+    if controller.activate(request.json["_id"], cuerrt_user):
         return flask.jsonify({
             "estado": "OK",
             "mensaje": "El usuario activado correctamente"

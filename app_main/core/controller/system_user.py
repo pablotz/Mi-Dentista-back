@@ -127,7 +127,7 @@ def edit(request):
         
         
 
-def desactivate(_id):
+def desactivate(_id, user_id):
     if _id == 0:
         return "El id no puede ser cero"
     desactivateUser = db.session.query(model).filter(model.id == _id).first()
@@ -136,7 +136,7 @@ def desactivate(_id):
     db.session.commit()
     return True
 
-def activate(_id):
+def activate(_id, user_id):
     if _id == 0:
         return "El id no puede ser cero"
     activateUser = db.session.query(model).filter(model.id == _id).first()
