@@ -69,7 +69,7 @@ def edit(current_user):
     message = ''
     content = ''
     try:
-        edit_user = controller.edit(flask.request, current_user)
+        edit_user = controller.edit(flask.request)
 
         status = "OK"
         message = "user Edited"
@@ -91,7 +91,7 @@ def desactivate(cuerrt_user):
             "estado": "ADVERTENCIA",
             "mensaje": "Ha ocurrido un error"
         })
-        
+
     if controller.desactivate(request.json["_id"], cuerrt_user):
         return flask.jsonify({
             "estado": "OK",
