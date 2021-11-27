@@ -175,6 +175,14 @@ def get_or_error(json, atributo):
         raise Exception(f"Formato incorrecto en {atributo}")
 
 
+def get(json, atributo):
+    try:
+        return json[atributo]
+
+    except Exception:
+        return None
+
+
 def cancel(request):
     if not request.json:
         raise Exception(
@@ -195,7 +203,12 @@ def cancel(request):
     return None
 
 
-def get_by_user(user_id):
+def get_by_user(request, user_id):
+    var_user_id = get(request.json, 'user_id')
+
+    if var_user_id is not None:
+        user_id = var_user_id
+
     result = model.query.filter(
         model.user_id == user_id, model.status == 1).all()
 

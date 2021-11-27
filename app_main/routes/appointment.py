@@ -76,7 +76,7 @@ def get_by_user(current_user_id):
     message = ''
     content = ''
     try:
-        appointments = controller.get_by_user(current_user_id)
+        appointments = controller.get_by_user(flask.request, current_user_id)
 
         status = "OK"
         message = "Appointments retrieved"
