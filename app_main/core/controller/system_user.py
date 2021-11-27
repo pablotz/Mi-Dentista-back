@@ -82,7 +82,7 @@ def editMe(request, user_id):
         
         
         
-def edit(request):
+def edit(request, user_id):
     if not request.json:
         raise Exception('JSON no encontrado. El JSON es necesario para procesar la petición.')
     
@@ -92,32 +92,20 @@ def edit(request):
     lastName = get_or_error(requestJSON, 'lastName')
     email = get_or_error(requestJSON, 'email')
     phone = get(requestJSON, 'phone')
-    password = get_or_error(requestJSON, 'password')
-    role = get_or_error(requestJSON, 'role')
-    
-    if(role == "admin"):
-        role = 1
-    else:
-        role = 0
-    #create_by = obtener_validar(requestJSON, 'create_by')
     
     edit_user = model(
            id=id, 
            user_name=name,
            last_name=lastName,
            email=email,
-           user_password=generate_password_hash(password, method='sha256'),
-           phone=phone,
-           user_role=role
+           phone=phone
     )
     try:
         editUser =  db.session.query(model).filter(model.id == edit_user.id).first()
         editUser.user_name = edit_user.user_name
         editUser.last_name = edit_user.last_name
         editUser.email = edit_user.email
-        editUser.user_password = edit_user.user_password
         editUser.phone = edit_user.phone
-        editUser.user_role = edit_user.user_role
         db.session.add(editUser)
         db.session.commit()
         
