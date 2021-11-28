@@ -97,6 +97,12 @@ def edit(request):
     phone = get(requestJSON, 'phone')
     password = get(requestJSON, 'password')
     role = get(requestJSON, 'role')
+    if(role == "admin"):
+        role = 1
+    elif(role == "assistant"):
+        role = 2
+    else:
+        role = 0
     #create_by = obtener_validar(requestJSON, 'create_by')
 
     edit_user = model(
@@ -110,6 +116,8 @@ def edit(request):
     try:
         editUser = db.session.query(model).filter(
             model.id == edit_user.id).first()
+        if editUser is None:
+            raise Exception('No existe el usuario')
         editUser.user_name = edit_user.user_name
         editUser.last_name = edit_user.last_name
         editUser.email = edit_user.email
