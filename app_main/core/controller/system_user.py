@@ -96,6 +96,7 @@ def edit(request):
     email = get_or_error(requestJSON, 'email')
     phone = get(requestJSON, 'phone')
     password = get(requestJSON, 'password')
+    role = get(requestJSON, 'role')
     #create_by = obtener_validar(requestJSON, 'create_by')
 
     edit_user = model(
@@ -104,6 +105,7 @@ def edit(request):
         last_name=lastName,
         email=email,
         phone=phone,
+        user_role=role
     )
     try:
         editUser = db.session.query(model).filter(
@@ -112,6 +114,9 @@ def edit(request):
         editUser.last_name = edit_user.last_name
         editUser.email = edit_user.email
         editUser.phone = edit_user.phone
+
+        if role is not None:
+            editUser.user_role = role
 
         if password is not None:
             editUser.user_password = generate_password_hash(
