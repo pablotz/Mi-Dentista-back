@@ -112,7 +112,7 @@ def get_by_month(current_user_id):
 
 
 @route.route('/get_by_period', methods=['POST'])
-@session.validate_access([1])
+@session.validate_access([1, 2])
 def get_by_period(current_user_id):
     status = ''
     message = ''

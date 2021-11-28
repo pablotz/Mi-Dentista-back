@@ -28,7 +28,7 @@ def add():
 
 
 @route.route("/get", methods=['GET'])
-@session.validate_access([1])
+@session.validate_access([1, 2])
 def getAllUsers(current_user):
     users = controller.getUser(current_user)
     users_json = []
@@ -40,7 +40,7 @@ def getAllUsers(current_user):
 
 
 @route.route('/editme', methods=['POST'])
-@session.validate_access([0, 1])
+@session.validate_access([0, 1, 2])
 def editme(current_user):
     # return controller.add(flask.request)
     status = ''
@@ -62,7 +62,7 @@ def editme(current_user):
 
 
 @route.route('/edit', methods=['POST'])
-@session.validate_access([1])
+@session.validate_access([1, 2])
 def edit(current_user):
     # return controller.add(flask.request)
     status = ''
@@ -84,7 +84,7 @@ def edit(current_user):
 
 
 @route.route("/desactivate", methods=['POST'])
-@session.validate_access([1])
+@session.validate_access([1, 2])
 def desactivate(cuerrt_user):
     if "_id" not in request.json:
         return flask.jsonify({
@@ -100,7 +100,7 @@ def desactivate(cuerrt_user):
 
 
 @route.route("/activate", methods=['POST'])
-@session.validate_access([1])
+@session.validate_access([1, 2])
 def activate(cuerrt_user):
     if "_id" not in request.json:
         return flask.jsonify({
@@ -115,7 +115,7 @@ def activate(cuerrt_user):
 
 
 @route.route("/findme", methods=['GET'])
-@session.validate_access([0, 1])
+@session.validate_access([0, 1, 2])
 def findServices(current_user_id):
     estado = "OK"
     mensaje = "Información consultada correctamente"

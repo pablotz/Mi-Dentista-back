@@ -23,6 +23,8 @@ def add(request):
     access_code = None
     if(role == "admin"):
         role = 1
+    elif(role == "assistant"):
+        role = 2
     else:
         role = 0
         access_code = get_or_error(requestJSON, 'access_code')
