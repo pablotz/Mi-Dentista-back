@@ -70,7 +70,7 @@ def cancel(current_user_id):
 
 
 @route.route('/get_by_user', methods=['POST'])
-@session.validate_access([0, 1])
+@session.validate_access([0, 1, 2])
 def get_by_user(current_user_id):
     status = ''
     message = ''
